@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.io.*;
+import java.util.Base64;
 
 public class Comunicacion {
 
@@ -27,5 +28,12 @@ public class Comunicacion {
         ObjectOutputStream objectOnputStream = new ObjectOutputStream(outputStream);
         objectOnputStream.writeObject(objetoEnviar);
         objectOnputStream.flush();
+    }
+
+    public static String encodeBytes (byte[] bytesToEncode){
+        return Base64.getEncoder().encodeToString(bytesToEncode);
+    }
+    public static byte[] decodeString(String stringToDecode){
+        return Base64.getDecoder().decode(stringToDecode);
     }
 }

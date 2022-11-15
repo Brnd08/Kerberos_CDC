@@ -2,7 +2,7 @@ package DistribucionClaves;
 
 import Utilities.Comunicacion;
 import Utilities.Conexiones;
-import Utilities.Criptografo;
+import Utilities.RSACriptografo;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,8 +62,8 @@ public class EmisorClaveSecreta extends SolicitanteClave{
         String claveSecreta = scan.nextLine();
         System.out.println(claveSecreta);
 
-        Criptografo criptografo = new Criptografo("RSA");
-        String claveSecretaCifrada = criptografo.cifrarString(claveSecreta, llave_privada_emisor);
+        RSACriptografo RSACriptografo = new RSACriptografo("RSA");
+        String claveSecretaCifrada = RSACriptografo.cifrarString(claveSecreta, llave_privada_emisor);
         System.out.println("clave Secreta Cifrada " + claveSecretaCifrada);
 
 

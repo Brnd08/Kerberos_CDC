@@ -4,10 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 
-public class Criptografo {
+public class RSACriptografo {
     final String algoritmo;
 
-    public Criptografo(String algoritmo) {
+    public RSACriptografo(String algoritmo) {
         this.algoritmo = algoritmo;
     }
 

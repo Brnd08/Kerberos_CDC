@@ -24,14 +24,18 @@ public class Adendum {
     }
 
     public static String cifrarAdendum(byte adendumCifrar, Key llaveCifrado) throws Exception {
+
         String adendum_clave_secreta = String.valueOf(adendumCifrar);
-        byte[] bytes_encriptadosAdendum = new EncriptadorBytes("RSA").encriptarBytes(adendum_clave_secreta.getBytes(StandardCharsets.UTF_8), llaveCifrado);
+        byte[] bytesClaveSecreta = adendum_clave_secreta.getBytes(StandardCharsets.UTF_8);
+
+        byte[] bytes_encriptadosAdendum = new EncriptadorBytes("RSA")
+                .encriptarBytes(bytesClaveSecreta, llaveCifrado);
         String adendum_cifrado = new String (bytes_encriptadosAdendum, StandardCharsets.UTF_8);
         return adendum_cifrado;
     }
     public static byte descifrarAdendum(String adendumCifrado, Key llaveDescifrado) throws Exception {
         byte[] bytes_desencriptados = new DesencriptadorBytes("RSA")
-                .descencriptarBytes(adendumCifrado.getBytes(StandardCharsets.UTF_8), llaveDescifrado);
+                .descencriptarBytes(Comunicacion.decodeString(adendumCifrado), llaveDescifrado);
         String adendum_descifrado = new String (bytes_desencriptados, StandardCharsets.UTF_8);
         byte adendumDescifrado = Byte.valueOf(adendum_descifrado);
         return adendumDescifrado;

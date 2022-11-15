@@ -3,7 +3,7 @@ package DistribucionClaves;
 import Utilities.Adendum;
 import Utilities.Comunicacion;
 import Utilities.Conexiones;
-import Utilities.Criptografo;
+import Utilities.RSACriptografo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,8 +67,8 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
         String claveSecretaCifrada = (String) Comunicacion.recibirObjeto(inputStream);
         System.out.println("clave secreta Cifrada" + claveSecretaCifrada);
 
-        Criptografo criptografo = new Criptografo("RSA");
-        String claveSecreta = criptografo.descifrarString(claveSecretaCifrada, llave_publica_emisor);
+        RSACriptografo RSACriptografo = new RSACriptografo("RSA");
+        String claveSecreta = RSACriptografo.descifrarString(claveSecretaCifrada, llave_publica_emisor);
         System.out.println("clave secreta" + claveSecreta);
 
         byte adendum_clave_secreta = Adendum.obtenerAdendumClave(claveSecreta);
