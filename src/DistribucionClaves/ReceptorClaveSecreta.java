@@ -1,5 +1,6 @@
 package DistribucionClaves;
 
+import Chat.ChatStarter;
 import Utilities.Adendum;
 import Utilities.Comunicacion;
 import Utilities.Conexiones;
@@ -23,13 +24,7 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
     public static void main(String[] args) throws Exception {
 
         Scanner scan = new Scanner(System.in);
-
-//       ReceptorClaveSecreta receptorClave = new ReceptorClaveSecreta();
-
-//        System.out.println("Ingresa el puerto de la Autoridad Autentificadora");
-//        int puerto_AC = Integer.parseInt(scan.nextLine());
         int puerto_AC = 5001;
-//        System.out.println(puerto_AC);
 
         System.out.println("Ingresa la ip de la Autoridad Autentificadora");
         String ip_AC = scan.nextLine();
@@ -40,8 +35,6 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
 
         Socket conexion_con_AC1 = Conexiones.obtenerConexion(puerto_AC, ip_AC);
 
-
-//        String ip_propia = InetAddress.getLocalHost().getHostAddress();
 
 
         System.out.println("Ingresa la ip del emisor clave");
@@ -56,8 +49,6 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
 
         Socket conexion_con_AC2 = Conexiones.obtenerConexion(puerto_AC, ip_AC);
         Key llave_privada_receptor = solicitar_clave(conexion_con_AC2, "clave-privada", ip_receptor);
-
-        ReceptorClaveSecreta receptorClaveSecreta = new ReceptorClaveSecreta();
 
         System.out.println("conectando con emisor clave");
 
@@ -78,5 +69,11 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
         byte adendumDescifrado = Adendum.descifrarAdendum(adendumCifrado, llave_privada_receptor);
 
         System.out.println("Adendum descifrado " + adendumDescifrado);
+
+        ServerSocket serverSocketChat = new ServerSocket(6000);
+
+        Socket socketChat = Conexiones.aceptarConexionEntrante(6000, serverSocketChat);
+        ChatStarter chat = new ChatStarter(socketChat, "queOndaMau");
+        chat.iniciarChat();
     }
 }
