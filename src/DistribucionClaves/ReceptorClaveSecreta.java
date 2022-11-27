@@ -70,6 +70,7 @@ public class ReceptorClaveSecreta extends SolicitanteClave {
 
         System.out.println("Adendum descifrado " + adendumDescifrado);
 
+
         ServerSocket serverSocketChat = new ServerSocket(6000);
 
         Socket socketChat = Conexiones.aceptarConexionEntrante(6000, serverSocketChat);

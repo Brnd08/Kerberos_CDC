@@ -6,7 +6,7 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 
 public class EncriptadorBytes {
-    private final Cipher cifrador;
+    Cipher cifrador;
 
     public EncriptadorBytes(String algoritmo_de_cifrado)throws Exception {
         try {

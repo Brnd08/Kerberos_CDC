@@ -1,57 +1,73 @@
 package Chat;
 import Utilities.Comunicacion;
+import Utilities.DesencriptadorBytes;
+import Utilities.EncriptadorBytes;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
-import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AESCriptografo {
+    private static final String ALGORITMO = "AES/ECB/PKCS5Padding";
 
-    private static SecretKeySpec secretKeySpec;
-    private static byte[] llave;
+    private SecretKeySpec secretKeySpec;
 
-    public static void setLlave(final String myKey) {
-        MessageDigest sha = null;
+    public AESCriptografo(String llaveSecreta) throws Exception {
+        this.setLlave(llaveSecreta);
+    }
+
+    private void setLlave(final String myKey) {
+        this.secretKeySpec = StringToSecretKey(myKey);
+    }
+
+    public String desencriptarMensaje(final String strToEncrypt) throws Exception {
+        String mensajeDesencriptado = null;
+        DesencriptadorBytes desencriptadorBytes = new DesencriptadorBytes(ALGORITMO);
         try {
-            llave = myKey.getBytes("UTF-8");
-            sha = MessageDigest.getInstance("SHA-1");
-            llave = sha.digest(llave);
-            llave = Arrays.copyOf(llave, 16);
-            secretKeySpec = new SecretKeySpec(llave, "AES");
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+
+            byte[] bytesCifrado = Comunicacion.decodeString(strToEncrypt);
+            byte[] bytesDescifrados =
+                    desencriptadorBytes.descencriptarBytes(bytesCifrado, this.secretKeySpec);
+            mensajeDesencriptado = Comunicacion.encodeBytes(bytesDescifrados);
+        } catch (Exception e) {
+            System.out.println("Error al desencriptar el mensaje : " + e.toString());
             e.printStackTrace();
         }
+        return mensajeDesencriptado;
     }
 
-    public static String encriptarMensaje(final String strToEncrypt, final String secret) {
-        try {
-            setLlave(secret);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+    public String encriptarMensaje(final String cadenaEncriptar) throws Exception {
+        String mensajeEncriptado = null;
 
-            String encriptado =
-                    Comunicacion.encodeBytes((cipher.doFinal(strToEncrypt.getBytes("UTF-8"))));
-            return encriptado;
+        EncriptadorBytes encriptador = new EncriptadorBytes(ALGORITMO);
+        try {
+
+            byte[] bytesMensaje = Comunicacion.decodeString(cadenaEncriptar);
+            byte[] bytesCifrados = encriptador.encriptarBytes(bytesMensaje, this.secretKeySpec);
+            mensajeEncriptado = Comunicacion.encodeBytes(bytesCifrados);
         } catch (Exception e) {
-            System.out.println("Error while encrypting: " + e.toString());
+            System.out.println("Error al encriptar el mensaje : " + e.toString());
+            e.printStackTrace();
         }
-        return null;
+        return mensajeEncriptado;
     }
 
-    public static String desencriptarMensaje(final String cadenaDesencriptar, final String secret) {
-        try {
-            setLlave(secret);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-            String desEncriptado = new String(cipher.doFinal(Comunicacion.decodeString(cadenaDesencriptar)));
-            return desEncriptado;
-        } catch (Exception e) {
-            System.out.println("Error while decrypting: " + e.toString());
+
+
+    public SecretKeySpec StringToSecretKey(String stringSecKey){
+        // instancía un objeto ClaveSecreta
+        SecretKeySpec secretKey = null;
+        try{
+            //obtiene los bytes de la clave secreta
+            byte[] byteSecKey = stringSecKey.getBytes(StandardCharsets.UTF_8);
+            // convierte los bytes de clave secreta a un arreglo de 16 bytes o 128 bits
+            byteSecKey = Arrays.copyOf(byteSecKey, 16);
+            // asigna valor al objeto ClaveSecreta
+            secretKey = new SecretKeySpec(byteSecKey, ALGORITMO.split("/")[0]);
         }
-        return null;
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return secretKey;
     }
 }

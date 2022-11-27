@@ -11,8 +11,10 @@ public class ChatStarter {
     PrintWriter printWriter;
     BufferedReader bufferedReader;
     private AESCriptografo criptografo;
+    String claveSecreta;
 
     public ChatStarter( Socket conexionEntrada, String claveSecreta) throws Exception {
+        this.claveSecreta = claveSecreta;
         this.conexionEntrada = conexionEntrada;
         this.printWriter = new PrintWriter(conexionEntrada.getOutputStream());
         this.bufferedReader = new BufferedReader(new InputStreamReader(conexionEntrada.getInputStream()));
@@ -22,16 +24,15 @@ public class ChatStarter {
     public void iniciarChat() throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("----------------CHAT INICIALIZADO----------------");
-
+        System.out.println("Clave Secreta: "+ claveSecreta);
+        System.out.println("-------------------------------------------------");
 
         while(true){
             String mensaje = scanner.nextLine();
-            System.out.println(mensaje);
             String mensajeCifrado = this.criptografo.encriptarMensaje(mensaje);
             Comunicacion.enviarMensaje(mensajeCifrado, this.printWriter);//envia mensaje
 
             String mensajeCifradoRecibido = Comunicacion.recibirMensaje(this.bufferedReader);//espera un nuevo mensaje
-            System.out.println("cifrado Recibido " + mensajeCifradoRecibido);
 
             String mensajeDescifrado = this.criptografo.desencriptarMensaje(mensajeCifradoRecibido);
             System.out.println(mensajeDescifrado);

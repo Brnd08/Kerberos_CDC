@@ -13,4 +13,6 @@ import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
 
 public class Main {
 
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+    }
 }
